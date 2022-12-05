@@ -9,7 +9,7 @@ PODS:
 
 DEPENDENCIES:
   - AppAuth (= 1.6.0)
-  - SwiftKeychainWrapper
+  - SwiftKeychainWrapper (= 3.0.1)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -20,6 +20,6 @@ SPEC CHECKSUMS:
   AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   SwiftKeychainWrapper: 38952a3636320ae61bad3513cadd870929de7a4a
 
-PODFILE CHECKSUM: 7312ac5c30bb9e5d65fc2d0f592bba66de343fc6
+PODFILE CHECKSUM: 5b873ee44bd67706d8f252c520a9c79759b9f275
 
 COCOAPODS: 1.11.3
