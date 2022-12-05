@@ -19,7 +19,6 @@
 //
 
 import Foundation
-import Alamofire
 
 class KeycloakAPI {
     
@@ -29,57 +28,13 @@ class KeycloakAPI {
         
         let params = ["grant_type": grantType, "redirect_uri": redirectUri, "client_id": clientId, "code": code]
 
-        Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.default)
-            .responseJSON { response in
-
-                guard response.result.isSuccess else {
-                    completionHandler(nil, AuthenticationError.unknownError)
-                    return
-                }
-
-                guard let json = response.result.value as? [String: Any] else {
-                    print("No JSON returned in response.")
-                    print("Error: \(String(describing: response.result.error))")
-
-                    completionHandler(nil, AuthenticationError.unknownError)
-                    return
-                }
-
-                let model = Credentials(withJSON: json)
-                completionHandler(model, nil)
-        }
+        // TODO: implement AppAuth
     }
     
     class func refresh(credentials: Credentials, url: URL, grantType: String, redirectUri: String, clientId: String, completionHandler: @escaping (_ response: Credentials?, _ error: Error?) -> ()) {
 
         let params = ["grant_type": grantType, "redirect_uri": redirectUri, "client_id": clientId, "refresh_token": credentials.refreshToken]
         
-        Alamofire.request(url, method: .post, parameters: params, encoding: URLEncoding.default)
-            .responseJSON { response in
-                
-                guard response.result.isSuccess else {
-                    completionHandler(nil, AuthenticationError.unknownError)
-                    return
-                }
-                
-                guard let json = response.result.value as? [String: Any], json["error"] == nil else {
-                    print("result error: \(String(describing: response.result.error))")
-                    if let json = response.result.value as? [String: Any] {
-                        let errorMessage = String(describing: json["error_description"] ?? "No message supplied")
-                        print("result message: \(errorMessage)")
-                        
-                        if errorMessage == KeycloakAPI.refreshTokenExpiredMessage {
-                            completionHandler(nil, AuthenticationError.expired)
-                            return
-                        }
-                    }
-
-                    completionHandler(nil, AuthenticationError.unknownError)
-                    return
-                }
-                
-                let model = Credentials(withJSON: json)
-                completionHandler(model, nil)
-        }
+        // TODO: implement AppAuth
     }
 }
