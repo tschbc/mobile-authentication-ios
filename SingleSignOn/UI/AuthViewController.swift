@@ -39,7 +39,7 @@ public class AuthViewController: UIViewController {
     }()
     private let headerView: WebHeaderView = {
         let bundle = Bundle(for: WebHeaderView.self)
-        let v = bundle.loadNibNamed("WebHeaderView", owner: self, options: nil)?.first as! WebHeaderView
+        let v = bundle.loadNibNamed("WebHeaderView", owner: AuthViewController.self, options: nil)?.first as! WebHeaderView
         v.translatesAutoresizingMaskIntoConstraints = false
 
         return v
