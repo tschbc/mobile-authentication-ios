@@ -69,7 +69,12 @@ public class AuthServices: NSObject {
         
         let endpoint = Constants.API.token.replacingOccurrences(of: Constants.API.realmToken, with: realm)
         let url = baseUrl.appendingPathComponent(endpoint)
-        KeycloakAPI.exchange(oneTimeCode: oneTimeCode, url: url, grantType: Constants.GrantType.authorizationCode.rawValue, redirectUri: redirectUri, clientId: clientId) { (credentials: Credentials?, error: Error?) in
+        KeycloakAPI.exchange(oneTimeCode: oneTimeCode,
+                             url: url,
+                             grantType: Constants.GrantType.authorizationCode.rawValue,
+                             redirectUri: redirectUri,
+                             clientId: clientId)
+        { (credentials: Credentials?, error: Error?) in
          
             self.credentials = credentials
             completion(credentials, error)
@@ -90,7 +95,12 @@ public class AuthServices: NSObject {
 
         let endpoint = Constants.API.token.replacingOccurrences(of: Constants.API.realmToken, with: realm)
         let url = baseUrl.appendingPathComponent(endpoint)
-        KeycloakAPI.refresh(credentials: credentials, url: url, grantType: Constants.GrantType.refreshToken.rawValue, redirectUri: redirectUri, clientId: clientId) { (credentials: Credentials?, error: Error?) in
+        KeycloakAPI.refresh(credentials: credentials,
+                            url: url,
+                            grantType: Constants.GrantType.refreshToken.rawValue,
+                            redirectUri: redirectUri,
+                            clientId: clientId)
+        { (credentials: Credentials?, error: Error?) in
             
             self.credentials = credentials
             completion(credentials, error)

@@ -19,19 +19,32 @@
 //
 
 import Foundation
+import AppAuth
 
 class KeycloakAPI {
     
     static let refreshTokenExpiredMessage = "Refresh token expired"
     
-    class func exchange(oneTimeCode code: String, url: URL, grantType: String, redirectUri: String, clientId: String, completionHandler: @escaping (_ response: Credentials?, _ error: Error?) -> ()) {
+    class func exchange(oneTimeCode code: String,
+                        url: URL,
+                        grantType: String,
+                        redirectUri: String,
+                        clientId: String,
+                        completionHandler: @escaping (_ response: Credentials?, _ error: Error?) -> ())
+    {
         
         let params = ["grant_type": grantType, "redirect_uri": redirectUri, "client_id": clientId, "code": code]
 
         // TODO: implement AppAuth
     }
     
-    class func refresh(credentials: Credentials, url: URL, grantType: String, redirectUri: String, clientId: String, completionHandler: @escaping (_ response: Credentials?, _ error: Error?) -> ()) {
+    class func refresh(credentials: Credentials,
+                       url: URL,
+                       grantType: String,
+                       redirectUri: String,
+                       clientId: String,
+                       completionHandler: @escaping (_ response: Credentials?, _ error: Error?) -> ())
+    {
 
         let params = ["grant_type": grantType, "redirect_uri": redirectUri, "client_id": clientId, "refresh_token": credentials.refreshToken]
         
