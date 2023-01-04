@@ -75,7 +75,11 @@ public struct Credentials {
         
         // If we are loading credentials from the keychain we will have two additional fields representing when the
         // tokens will expire. Otherwise they need to be created
-        if let refreshExpiresAtString  = data["refreshExpiresAt"] as? String, let refreshExpiresAt = Credentials.toDate(string: refreshExpiresAtString), let expiresAtString = data["expiresAt"] as? String, let expiresAt = Credentials.toDate(string: expiresAtString) {
+        if let refreshExpiresAtString = data["refreshExpiresAt"] as? String,
+           let refreshExpiresAt = Credentials.toDate(string: refreshExpiresAtString),
+           let expiresAtString = data["expiresAt"] as? String,
+           let expiresAt = Credentials.toDate(string: expiresAtString) {
+            
             self.refreshExpiresAt = refreshExpiresAt
             self.expiresAt = expiresAt
         } else {
@@ -84,7 +88,17 @@ public struct Credentials {
         }
 
         // Used to serialize this object so it can be stored in the keychian
-        props = ["token_type": tokenType, "refresh_token": refreshToken, "access_token": accessToken, "session_state": sessionState, "refresh_expires_in": refreshExpiresIn, "not-before-policy": notBeforePolicy, "expires_in": expiresIn, "refreshExpiresAt": Credentials.dateToString(date: refreshExpiresAt), "expiresAt": Credentials.dateToString(date: expiresAt)]
+        props = [
+            "token_type": tokenType,
+            "refresh_token": refreshToken,
+            "access_token": accessToken,
+            "session_state": sessionState,
+            "refresh_expires_in": refreshExpiresIn,
+            "not-before-policy": notBeforePolicy,
+            "expires_in": expiresIn,
+            "refreshExpiresAt": Credentials.dateToString(date: refreshExpiresAt),
+            "expiresAt": Credentials.dateToString(date: expiresAt)
+        ]
 
         save()
     }
