@@ -24,6 +24,18 @@ import SwiftKeychainWrapper
 
 public struct Credentials {
     
+    public struct Key {
+        public static let AccessToken = "access_token"
+        public static let TokenType = "token_type"
+        public static let RefreshToken = "refresh_token"
+        public static let SessionState = "session_state"
+        public static let RefreshExpiresIn = "refresh_expires_in"
+        public static let RefreshExpiresAt = "refreshExpiresAt"
+        public static let NotBeforePolicy = "not-before-policy"
+        public static let ExpiresIn = "expires_in"
+        public static let ExpiresAt = "expiresAt"
+    }
+    
     public let accessToken: String
     internal let tokenType: String
     internal let refreshToken: String
@@ -65,19 +77,19 @@ public struct Credentials {
     
     init(withJSON data: [String: Any]) {
 
-        tokenType = data["token_type"] as! String
-        refreshToken = data["refresh_token"] as! String
-        accessToken = data["access_token"] as! String
-        sessionState = data["session_state"] as! String
-        refreshExpiresIn = data["refresh_expires_in"] as! Int   // in sec
-        notBeforePolicy = data["not-before-policy"] as! Int
-        expiresIn = data["expires_in"] as! Int                  // in sec
+        tokenType = data[Key.TokenType] as! String
+        refreshToken = data[Key.RefreshToken] as! String
+        accessToken = data[Key.AccessToken] as! String
+        sessionState = data[Key.SessionState] as! String
+        refreshExpiresIn = data[Key.RefreshExpiresIn] as! Int   // in sec
+        notBeforePolicy = data[Key.NotBeforePolicy] as! Int
+        expiresIn = data[Key.ExpiresIn] as! Int                  // in sec
         
         // If we are loading credentials from the keychain we will have two additional fields representing when the
         // tokens will expire. Otherwise they need to be created
-        if let refreshExpiresAtString = data["refreshExpiresAt"] as? String,
+        if let refreshExpiresAtString = data[Key.RefreshExpiresAt] as? String,
            let refreshExpiresAt = Credentials.toDate(string: refreshExpiresAtString),
-           let expiresAtString = data["expiresAt"] as? String,
+           let expiresAtString = data[Key.ExpiresAt] as? String,
            let expiresAt = Credentials.toDate(string: expiresAtString) {
             
             self.refreshExpiresAt = refreshExpiresAt
@@ -89,15 +101,15 @@ public struct Credentials {
 
         // Used to serialize this object so it can be stored in the keychian
         props = [
-            "token_type": tokenType,
-            "refresh_token": refreshToken,
-            "access_token": accessToken,
-            "session_state": sessionState,
-            "refresh_expires_in": refreshExpiresIn,
-            "not-before-policy": notBeforePolicy,
-            "expires_in": expiresIn,
-            "refreshExpiresAt": Credentials.dateToString(date: refreshExpiresAt),
-            "expiresAt": Credentials.dateToString(date: expiresAt)
+            Key.TokenType: tokenType,
+            Key.RefreshToken: refreshToken,
+            Key.AccessToken: accessToken,
+            Key.SessionState: sessionState,
+            Key.RefreshExpiresIn: refreshExpiresIn,
+            Key.NotBeforePolicy: notBeforePolicy,
+            Key.ExpiresIn: expiresIn,
+            Key.RefreshExpiresAt: Credentials.dateToString(date: refreshExpiresAt),
+            Key.ExpiresAt: Credentials.dateToString(date: expiresAt)
         ]
 
         save()
