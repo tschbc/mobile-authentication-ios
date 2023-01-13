@@ -11,7 +11,6 @@
 		5610F074202D13E7004CD2AC /* SingleSignOnTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5610F073202D13E7004CD2AC /* SingleSignOnTests.swift */; };
 		5610F076202D13E7004CD2AC /* SingleSignOn.h in Headers */ = {isa = PBXBuildFile; fileRef = 5610F068202D13E7004CD2AC /* SingleSignOn.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5610F080202D14E3004CD2AC /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 5610F07F202D14E3004CD2AC /* Podfile */; };
-		56FC88DB202D1846008F7642 /* KeycloakAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FC88CB202D1845008F7642 /* KeycloakAPI.swift */; };
 		56FC88DC202D1846008F7642 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FC88CC202D1845008F7642 /* Constants.swift */; };
 		56FC88DD202D1846008F7642 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FC88CE202D1845008F7642 /* AuthViewController.swift */; };
 		56FC88DE202D1846008F7642 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56FC88CF202D1845008F7642 /* Media.xcassets */; };
@@ -48,7 +47,6 @@
 		5610F073202D13E7004CD2AC /* SingleSignOnTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleSignOnTests.swift; sourceTree = "<group>"; };
 		5610F075202D13E7004CD2AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5610F07F202D14E3004CD2AC /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		56FC88CB202D1845008F7642 /* KeycloakAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeycloakAPI.swift; sourceTree = "<group>"; };
 		56FC88CC202D1845008F7642 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		56FC88CE202D1845008F7642 /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		56FC88CF202D1845008F7642 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
@@ -126,7 +124,6 @@
 				5610F069202D13E7004CD2AC /* Info.plist */,
 				5610F07F202D14E3004CD2AC /* Podfile */,
 				56FC88E9202E0E04008F7642 /* SingleSignOn.podspec */,
-				56FC88CA202D1845008F7642 /* API */,
 				DA2D1D8E2971CE68000FC010 /* Extensions */,
 				56FC88D6202D1845008F7642 /* Model */,
 				56FC88D8202D1845008F7642 /* Services */,
@@ -142,14 +139,6 @@
 				5610F075202D13E7004CD2AC /* Info.plist */,
 			);
 			path = SingleSignOnTests;
-			sourceTree = "<group>";
-		};
-		56FC88CA202D1845008F7642 /* API */ = {
-			isa = PBXGroup;
-			children = (
-				56FC88CB202D1845008F7642 /* KeycloakAPI.swift */,
-			);
-			path = API;
 			sourceTree = "<group>";
 		};
 		56FC88CD202D1845008F7642 /* UI */ = {
@@ -347,7 +336,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				56FC88E6202D1846008F7642 /* Theme.swift in Sources */,
-				56FC88DB202D1846008F7642 /* KeycloakAPI.swift in Sources */,
 				56FC88DD202D1846008F7642 /* AuthViewController.swift in Sources */,
 				56FC88E1202D1846008F7642 /* AuthenticationDelegate.swift in Sources */,
 				56FC88E5202D1846008F7642 /* AuthServices.swift in Sources */,
