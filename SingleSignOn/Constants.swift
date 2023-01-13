@@ -32,15 +32,9 @@ struct Constants {
     }
 
     struct API {
-        // The token {{REALM_NAME}} will be replaced with the correct value
-        // as needed.
-        static let auth = "/auth/realms/{{REALM_NAME}}/protocol/openid-connect/auth"
-        static let token = "/auth/realms/{{REALM_NAME}}/protocol/openid-connect/token"
-        static let logout = "/auth/realms/{{REALM_NAME}}/protocol/openid-connect/logout"
         static let authenticationResponseType = "code"
         static let allowedWebDomain = "gov.bc.ca"
         static let secureScheme = "https"
-        static let realmToken = "{{REALM_NAME}}"
     }
     
     enum GrantType: String {

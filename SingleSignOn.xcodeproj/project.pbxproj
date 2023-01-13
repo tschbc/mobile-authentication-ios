@@ -26,6 +26,7 @@
 		56FC88EA202E0E04008F7642 /* SingleSignOn.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 56FC88E9202E0E04008F7642 /* SingleSignOn.podspec */; };
 		BBF776BE94BDB4E00ABA2247 /* Pods_SingleSignOn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 133211EAD64B6E7010491C5B /* Pods_SingleSignOn.framework */; };
 		DA2D1D8B2965E3FC000FC010 /* OIDTokenResponseExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2D1D8A2965E3FC000FC010 /* OIDTokenResponseExtension.swift */; };
+		DA2D1D912971D219000FC010 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA2D1D902971D219000FC010 /* Endpoint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		56FC88E9202E0E04008F7642 /* SingleSignOn.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SingleSignOn.podspec; sourceTree = SOURCE_ROOT; };
 		9DBB25529445D12D3C9FEEA5 /* Pods-SingleSignOn.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SingleSignOn.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SingleSignOn/Pods-SingleSignOn.debug.xcconfig"; sourceTree = "<group>"; };
 		DA2D1D8A2965E3FC000FC010 /* OIDTokenResponseExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OIDTokenResponseExtension.swift; sourceTree = "<group>"; };
+		DA2D1D902971D219000FC010 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		EBE0D3BF6EC9DFD049322169 /* Pods-SingleSignOn.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SingleSignOn.release.xcconfig"; path = "Pods/Target Support Files/Pods-SingleSignOn/Pods-SingleSignOn.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +126,7 @@
 				5610F069202D13E7004CD2AC /* Info.plist */,
 				5610F07F202D14E3004CD2AC /* Podfile */,
 				56FC88E9202E0E04008F7642 /* SingleSignOn.podspec */,
+				DA2D1D8F2971D1E2000FC010 /* API */,
 				DA2D1D8E2971CE68000FC010 /* Extensions */,
 				56FC88D6202D1845008F7642 /* Model */,
 				56FC88D8202D1845008F7642 /* Services */,
@@ -193,6 +196,14 @@
 				DA2D1D8A2965E3FC000FC010 /* OIDTokenResponseExtension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		DA2D1D8F2971D1E2000FC010 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				DA2D1D902971D219000FC010 /* Endpoint.swift */,
+			);
+			path = API;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +348,7 @@
 			files = (
 				56FC88E6202D1846008F7642 /* Theme.swift in Sources */,
 				56FC88DD202D1846008F7642 /* AuthViewController.swift in Sources */,
+				DA2D1D912971D219000FC010 /* Endpoint.swift in Sources */,
 				56FC88E1202D1846008F7642 /* AuthenticationDelegate.swift in Sources */,
 				56FC88E5202D1846008F7642 /* AuthServices.swift in Sources */,
 				DA2D1D8B2965E3FC000FC010 /* OIDTokenResponseExtension.swift in Sources */,
