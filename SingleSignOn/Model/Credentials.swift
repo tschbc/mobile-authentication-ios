@@ -40,10 +40,10 @@ public struct Credentials {
     internal let tokenType: String
     internal let refreshToken: String
     internal let sessionState: String
-    internal let refreshExpiresIn: Int
+    internal let refreshExpiresIn: Int // in seconds
     internal let refreshExpiresAt: Date
     internal let notBeforePolicy: Int
-    internal let expiresIn: Int
+    internal let expiresIn: Int // in seconds
     internal let expiresAt: Date
     internal let props: [String : Any]
 
@@ -81,9 +81,9 @@ public struct Credentials {
         refreshToken = data[Key.RefreshToken] as! String
         accessToken = data[Key.AccessToken] as! String
         sessionState = data[Key.SessionState] as! String
-        refreshExpiresIn = data[Key.RefreshExpiresIn] as! Int   // in sec
+        refreshExpiresIn = data[Key.RefreshExpiresIn] as! Int
         notBeforePolicy = data[Key.NotBeforePolicy] as! Int
-        expiresIn = data[Key.ExpiresIn] as! Int                  // in sec
+        expiresIn = data[Key.ExpiresIn] as! Int
         
         // If we are loading credentials from the keychain we will have two additional fields representing when the
         // tokens will expire. Otherwise they need to be created
