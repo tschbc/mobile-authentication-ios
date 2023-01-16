@@ -24,7 +24,7 @@ public typealias AuthenticationCompleted = (_ credentials: Credentials?, _ error
 
 public class AuthServices: NSObject {
 
-    private var endpoint: Endpoint
+    private let endpoint: Endpoint
     
     public private(set) var credentials: Credentials? = {
         return Credentials.loadFromStoredCredentials()
