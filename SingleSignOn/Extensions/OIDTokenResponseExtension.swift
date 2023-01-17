@@ -12,16 +12,20 @@ import AppAuth
 extension OIDTokenResponse {
     
     func toCredentials() -> Credentials {
+        let currentDate = Date()
+        let expiresIn = accessTokenExpirationDate!.timeIntervalSince(currentDate) // in seconds
+        let refreshExpiresIn = additionalParameters?[Credentials.Key.RefreshExpiresIn] as! Double // in seconds
+        let refreshExpiresAt = currentDate.addingTimeInterval(refreshExpiresIn)
         
         return Credentials(withJSON: [
             Credentials.Key.TokenType: tokenType!,
             Credentials.Key.RefreshToken: refreshToken!,
             Credentials.Key.AccessToken: accessToken!,
-            Credentials.Key.SessionState: value(forKey: Credentials.Key.SessionState) as Any,
-            Credentials.Key.RefreshExpiresIn: value(forKey: Credentials.Key.RefreshExpiresIn) as Any,
-            Credentials.Key.RefreshExpiresAt: value(forKey: Credentials.Key.RefreshExpiresAt) as Any,
-            Credentials.Key.NotBeforePolicy: value(forKey: Credentials.Key.NotBeforePolicy) as Any,
-            Credentials.Key.ExpiresIn: value(forKey: Credentials.Key.ExpiresIn) as Any,
+            Credentials.Key.SessionState: String(describing: additionalParameters?[Credentials.Key.SessionState]),
+            Credentials.Key.RefreshExpiresIn: Int(refreshExpiresIn),
+            Credentials.Key.RefreshExpiresAt: refreshExpiresAt,
+            Credentials.Key.NotBeforePolicy: additionalParameters?[Credentials.Key.NotBeforePolicy] as! Int,
+            Credentials.Key.ExpiresIn: Int(expiresIn),
             Credentials.Key.ExpiresAt: accessTokenExpirationDate!
         ])
         
