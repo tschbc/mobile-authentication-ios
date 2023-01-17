@@ -1,5 +1,5 @@
 //
-//  OIDTokenResponseExtension.swift
+//  CredentialsExtensions.swift
 //  SingleSignOn
 //
 //  Created by Scharien, Todd SDPR:EX on 2023-01-04.
