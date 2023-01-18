@@ -119,9 +119,9 @@ public struct Credentials {
         KeychainWrapper.standard.removeObject(forKey: Constants.Keychain.KeycloakCredentials)
     }
     
-    public func isExpired() -> Bool {
-
-        return isAuthTokenExpired() && isRefreshTokenExpired()
+    public func isValid() -> Bool {
+        
+        return !isAuthTokenExpired() && !isRefreshTokenExpired()
     }
     
     public func canRefresh() -> Bool {
