@@ -20,7 +20,6 @@
 
 import Foundation
 import SwiftKeychainWrapper
-import SwiftKeychainWrapper
 
 public struct Credentials {
     
