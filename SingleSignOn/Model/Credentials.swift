@@ -124,6 +124,11 @@ public struct Credentials {
         return isAuthTokenExpired() && isRefreshTokenExpired()
     }
     
+    public func canRefresh() -> Bool {
+        
+        return isAuthTokenExpired() && !isRefreshTokenExpired()
+    }
+    
     public func isAuthTokenExpired() -> Bool {
         
         return Date() > expiresAt
