@@ -145,7 +145,7 @@ public struct Credentials {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
             } catch let error {
-                print("error converting to json: \(error)")
+                print("Error converting to json: \(error)")
             }
         }
 
@@ -158,10 +158,10 @@ public struct Credentials {
             let data = try JSONSerialization.data(withJSONObject: props, options: .prettyPrinted)
             // Securley store the credentials
             guard KeychainWrapper.standard.set(data.base64EncodedString(), forKey: Constants.Keychain.KeycloakCredentials) else {
-                fatalError("Unalbe to store auth credentials")
+                fatalError("Unable to store auth credentials")
             }
         } catch let error {
-            print("error converting to json: \(error)")
+            print("Error converting to json: \(error)")
         }
     }
     
