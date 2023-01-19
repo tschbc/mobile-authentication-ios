@@ -20,18 +20,29 @@
 
 import Foundation
 import SwiftKeychainWrapper
-import SwiftKeychainWrapper
 
 public struct Credentials {
+    
+    public struct Key {
+        public static let AccessToken = "access_token"
+        public static let TokenType = "token_type"
+        public static let RefreshToken = "refresh_token"
+        public static let SessionState = "session_state"
+        public static let RefreshExpiresIn = "refresh_expires_in"
+        public static let RefreshExpiresAt = "refreshExpiresAt"
+        public static let NotBeforePolicy = "not-before-policy"
+        public static let ExpiresIn = "expires_in"
+        public static let ExpiresAt = "expiresAt"
+    }
     
     public let accessToken: String
     internal let tokenType: String
     internal let refreshToken: String
     internal let sessionState: String
-    internal let refreshExpiresIn: Int
+    internal let refreshExpiresIn: Int // in seconds
     internal let refreshExpiresAt: Date
     internal let notBeforePolicy: Int
-    internal let expiresIn: Int
+    internal let expiresIn: Int // in seconds
     internal let expiresAt: Date
     internal let props: [String : Any]
 
@@ -65,17 +76,21 @@ public struct Credentials {
     
     init(withJSON data: [String: Any]) {
 
-        tokenType = data["token_type"] as! String
-        refreshToken = data["refresh_token"] as! String
-        accessToken = data["access_token"] as! String
-        sessionState = data["session_state"] as! String
-        refreshExpiresIn = data["refresh_expires_in"] as! Int   // in sec
-        notBeforePolicy = data["not-before-policy"] as! Int
-        expiresIn = data["expires_in"] as! Int                  // in sec
+        tokenType = data[Key.TokenType] as! String
+        refreshToken = data[Key.RefreshToken] as! String
+        accessToken = data[Key.AccessToken] as! String
+        sessionState = data[Key.SessionState] as! String
+        refreshExpiresIn = data[Key.RefreshExpiresIn] as! Int
+        notBeforePolicy = data[Key.NotBeforePolicy] as! Int
+        expiresIn = data[Key.ExpiresIn] as! Int
         
         // If we are loading credentials from the keychain we will have two additional fields representing when the
         // tokens will expire. Otherwise they need to be created
-        if let refreshExpiresAtString  = data["refreshExpiresAt"] as? String, let refreshExpiresAt = Credentials.toDate(string: refreshExpiresAtString), let expiresAtString = data["expiresAt"] as? String, let expiresAt = Credentials.toDate(string: expiresAtString) {
+        if let refreshExpiresAtString = data[Key.RefreshExpiresAt] as? String,
+           let refreshExpiresAt = Credentials.toDate(string: refreshExpiresAtString),
+           let expiresAtString = data[Key.ExpiresAt] as? String,
+           let expiresAt = Credentials.toDate(string: expiresAtString) {
+            
             self.refreshExpiresAt = refreshExpiresAt
             self.expiresAt = expiresAt
         } else {
@@ -84,7 +99,17 @@ public struct Credentials {
         }
 
         // Used to serialize this object so it can be stored in the keychian
-        props = ["token_type": tokenType, "refresh_token": refreshToken, "access_token": accessToken, "session_state": sessionState, "refresh_expires_in": refreshExpiresIn, "not-before-policy": notBeforePolicy, "expires_in": expiresIn, "refreshExpiresAt": Credentials.dateToString(date: refreshExpiresAt), "expiresAt": Credentials.dateToString(date: expiresAt)]
+        props = [
+            Key.TokenType: tokenType,
+            Key.RefreshToken: refreshToken,
+            Key.AccessToken: accessToken,
+            Key.SessionState: sessionState,
+            Key.RefreshExpiresIn: refreshExpiresIn,
+            Key.NotBeforePolicy: notBeforePolicy,
+            Key.ExpiresIn: expiresIn,
+            Key.RefreshExpiresAt: Credentials.dateToString(date: refreshExpiresAt),
+            Key.ExpiresAt: Credentials.dateToString(date: expiresAt)
+        ]
 
         save()
     }
@@ -94,9 +119,14 @@ public struct Credentials {
         KeychainWrapper.standard.removeObject(forKey: Constants.Keychain.KeycloakCredentials)
     }
     
-    public func isExpired() -> Bool {
-
-        return isAuthTokenExpired() && isRefreshTokenExpired()
+    public func isValid() -> Bool {
+        
+        return !isAuthTokenExpired() && !isRefreshTokenExpired()
+    }
+    
+    public func canRefresh() -> Bool {
+        
+        return isAuthTokenExpired() && !isRefreshTokenExpired()
     }
     
     public func isAuthTokenExpired() -> Bool {
@@ -115,7 +145,7 @@ public struct Credentials {
             do {
                 return try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
             } catch let error {
-                print("error converting to json: \(error)")
+                print("Error converting to json: \(error)")
             }
         }
 
@@ -128,10 +158,10 @@ public struct Credentials {
             let data = try JSONSerialization.data(withJSONObject: props, options: .prettyPrinted)
             // Securley store the credentials
             guard KeychainWrapper.standard.set(data.base64EncodedString(), forKey: Constants.Keychain.KeycloakCredentials) else {
-                fatalError("Unalbe to store auth credentials")
+                fatalError("Unable to store auth credentials")
             }
         } catch let error {
-            print("error converting to json: \(error)")
+            print("Error converting to json: \(error)")
         }
     }
     

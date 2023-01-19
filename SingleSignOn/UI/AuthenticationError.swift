@@ -29,4 +29,5 @@ public enum AuthenticationError: Error {
     case credentialsUnavailable
     case expired
     case webRequestFailed(error: Error)
+    case unableToCreateTokenRefreshRequest
 }

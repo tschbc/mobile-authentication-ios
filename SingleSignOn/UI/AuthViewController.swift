@@ -23,11 +23,7 @@ import WebKit
 
 public class AuthViewController: UIViewController {
 
-    private var authUrl: URL
-    private var redirectUri: String
-    private var clientId: String
-    private var responseType: String
-    private var idpHint: String?
+    private var endpoint: Endpoint
     private let headerViewHeight: CGFloat = {
         return 88.0
     }()
@@ -39,7 +35,7 @@ public class AuthViewController: UIViewController {
     }()
     private let headerView: WebHeaderView = {
         let bundle = Bundle(for: WebHeaderView.self)
-        let v = bundle.loadNibNamed("WebHeaderView", owner: self, options: nil)?.first as! WebHeaderView
+        let v = bundle.loadNibNamed("WebHeaderView", owner: AuthViewController.self, options: nil)?.first as! WebHeaderView
         v.translatesAutoresizingMaskIntoConstraints = false
 
         return v
@@ -47,13 +43,8 @@ public class AuthViewController: UIViewController {
     private var recievedCustomRedirectUrl = false
     public weak var delegate: AuthenticationDelegate?
     
-    public init(authUrl: URL, redirectUri: String, clientId: String, responseType: String, idpHint: String? = nil) {
-     
-        self.redirectUri = redirectUri
-        self.clientId = clientId
-        self.authUrl = authUrl
-        self.responseType = responseType
-        self.idpHint = idpHint
+    public init(endpoint: Endpoint) {
+        self.endpoint = endpoint
 
         super.init(nibName: nil, bundle: nil)
         
@@ -100,14 +91,8 @@ public class AuthViewController: UIViewController {
     
     private func buildAuthenticationURL() -> URL? {
         
-        var components = URLComponents(url: authUrl, resolvingAgainstBaseURL: true)
-        var query = "response_type=\(responseType)&client_id=\(clientId)&redirect_uri=\(redirectUri)"
-        if let idpHint = idpHint {
-            query = query + "&kc_idp_hint=\(idpHint)"
-        }
-
-        components?.query = query
-
+        var components = URLComponents(url: URL(string: endpoint.authUrl)!, resolvingAgainstBaseURL: true)
+        components?.query = endpoint.oidcQuery
         return components?.url
     }
     
@@ -149,7 +134,7 @@ public class AuthViewController: UIViewController {
         // Only the scheme is important in determining if the URL is our
         // custom redirect URL.
         let redirComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        let customComponents = URLComponents(string: redirectUri)
+        let customComponents = URLComponents(string: endpoint.redirectUri)
         
         return redirComponents?.scheme == customComponents?.scheme
     }

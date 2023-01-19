@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name            = "SingleSignOn"
-  s.version         = "1.0.6"
+  s.version         = "1.1.0"
   s.summary         = "Library to interface with RedHat SSO"
   s.description     = "This pod contains various components to support authentication and credential managment"
   s.homepage        = "http://pathfinder.gov.bc.ca"
@@ -12,5 +12,5 @@ Pod::Spec.new do |s|
   s.resources       = 'SingleSignOn/**/*.{storyboard,xib,xcassets}'
   s.requires_arc    = true
   s.dependency      'SwiftKeychainWrapper', '~> 3.0.1'
-  s.dependency      'Alamofire', '~> 4.7.3'
+  s.dependency      'AppAuth', '1.6.0'
 end

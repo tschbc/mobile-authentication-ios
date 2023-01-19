@@ -1,20 +1,25 @@
 PODS:
-  - Alamofire (4.7.3)
+  - AppAuth (1.6.0):
+    - AppAuth/Core (= 1.6.0)
+    - AppAuth/ExternalUserAgent (= 1.6.0)
+  - AppAuth/Core (1.6.0)
+  - AppAuth/ExternalUserAgent (1.6.0):
+    - AppAuth/Core
   - SwiftKeychainWrapper (3.0.1)
 
 DEPENDENCIES:
-  - Alamofire
-  - SwiftKeychainWrapper
+  - AppAuth (= 1.6.0)
+  - SwiftKeychainWrapper (= 3.0.1)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - Alamofire
+  https://github.com/CocoaPods/Specs.git:
+    - AppAuth
     - SwiftKeychainWrapper
 
 SPEC CHECKSUMS:
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  AppAuth: 8fca6b5563a5baef2c04bee27538025e4ceb2add
   SwiftKeychainWrapper: 38952a3636320ae61bad3513cadd870929de7a4a
 
-PODFILE CHECKSUM: 5b9df332a135fcc090d04042e541929ed53aa5d4
+PODFILE CHECKSUM: 5b873ee44bd67706d8f252c520a9c79759b9f275
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.11.3

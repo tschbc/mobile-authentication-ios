@@ -5,7 +5,7 @@
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at 
+// You may obtain a copy of the License at
 //
 // http://www.apache.org/licenses/LICENSE-2.0
 //
@@ -19,66 +19,116 @@
 //
 
 import Foundation
-
-public typealias AuthenticationCompleted = (_ credentials: Credentials?, _ error: Error?) -> Void
+import AppAuth
 
 public class AuthServices: NSObject {
 
-    private var baseUrl: URL
-    private var redirectUri: String
-    private var clientId: String
-    private var realm: String
-    private var idpHint: String?
+    private let endpoint: Endpoint
+    private let authConfig: OIDServiceConfiguration
+    
+    private var authRequest: OIDAuthorizationRequest {
+        return OIDAuthorizationRequest(
+            configuration: authConfig,
+            clientId: endpoint.clientId,
+            scopes: [OIDScopeOpenID, OIDScopeProfile],
+            redirectURL: URL(string: endpoint.redirectUri)!,
+            responseType: OIDResponseTypeCode,
+            additionalParameters: nil
+        )
+    }
+    
     public private(set) var credentials: Credentials? = {
         return Credentials.loadFromStoredCredentials()
     }()
-    public var onAuthenticationCompleted: AuthenticationCompleted?
+    
+    private var _authState: OIDAuthState?
+    var authState: OIDAuthState? {
+        get {
+            if _authState == nil {
+                do {
+                    _authState = try OIDAuthState.loadFromSerialized()
+                } catch {
+                    _authState = nil
+                }
+            }
+            return _authState
+        }
+        set {
+            _authState = newValue
+        }
+    }
+    var currentAuthorizationFlow: OIDExternalUserAgentSession?
     
     public init(baseUrl: URL, redirectUri: String, clientId: String, realm: String, idpHint: String? = nil) {
         
-        self.baseUrl = baseUrl
-        self.redirectUri = redirectUri
-        self.clientId = clientId
-        self.realm = realm
-        self.idpHint = idpHint
-
+        endpoint = Endpoint(
+            realmName: realm,
+            clientId: clientId,
+            redirectUri: redirectUri,
+            baseUrl: baseUrl.absoluteString,
+            hint: idpHint
+        )
+        
+        authConfig = OIDServiceConfiguration(
+            authorizationEndpoint: URL(string: endpoint.authUrl)!,
+            tokenEndpoint: URL(string: endpoint.tokenUrl)!
+        )
+        
         super.init()
     }
 
     public func isAuthenticated() -> Bool {
-
-        guard let credentials = credentials, !credentials.isExpired() else {
-            return false
+        if let credentials {
+            return credentials.isValid()
         }
-        
-        return true
+        return false
     }
     
-    public func viewController(completion: AuthenticationCompleted? = nil) -> AuthViewController {
-     
-        let endpoint = Constants.API.auth.replacingOccurrences(of: Constants.API.realmToken, with: realm)
-        let url = baseUrl.appendingPathComponent(endpoint)
-        let avc = AuthViewController(authUrl: url, redirectUri: redirectUri, clientId: clientId, responseType: Constants.API.authenticationResponseType,  idpHint: idpHint)
-        avc.delegate = self
-        onAuthenticationCompleted = completion
-        
-        return avc
+    public func canRefresh() -> Bool {
+        if let credentials {
+            return credentials.canRefresh() && authState != nil
+        }
+        return false
     }
-
-    public func exchange(_ oneTimeCode: String, completion: @escaping (Credentials?, Error?) -> Void) {
-        
-        let endpoint = Constants.API.token.replacingOccurrences(of: Constants.API.realmToken, with: realm)
-        let url = baseUrl.appendingPathComponent(endpoint)
-        KeycloakAPI.exchange(oneTimeCode: oneTimeCode, url: url, grantType: Constants.GrantType.authorizationCode.rawValue, redirectUri: redirectUri, clientId: clientId) { (credentials: Credentials?, error: Error?) in
-         
-            self.credentials = credentials
-            completion(credentials, error)
+    
+    public func doWithAuthentication(presenting: UIViewController, completion: @escaping (Credentials?, Error?) -> Void) {
+        if isAuthenticated() {
+            completion(credentials, nil)
+        } else if canRefresh() {
+            refreshCredientials(completion: completion)
+        } else {
+            // no credentials or all tokens expired
+            authenticate(presenting: presenting, completion: completion)
         }
     }
     
-    public func refreshCredientials(completion: @escaping (Credentials?, Error?) -> Void) {
+    private func authenticate(presenting: UIViewController, completion: @escaping (Credentials?, Error?) -> Void) {
         
-        guard let credentials = credentials else {
+        OIDAuthState.removeFromStorage()
+        
+        currentAuthorizationFlow = OIDAuthState.authState(byPresenting: authRequest, presenting: presenting)
+        { authState, error in
+            
+            self.authState = authState ?? nil
+            self.credentials = authState?.lastTokenResponse?.toCredentials()
+            
+            if let authState, error == nil {
+                do {
+                    try authState.saveAsSerialized()
+                } catch let savingError {
+                    self.logout()
+                    completion(nil, savingError)
+                    return
+                }
+            }
+            
+            completion(self.credentials, error)
+        }
+    }
+    
+    private func refreshCredientials(completion: @escaping (Credentials?, Error?) -> Void) {
+        
+        guard let credentials else {
             completion(nil, AuthenticationError.credentialsUnavailable)
             return
         }
@@ -87,10 +137,29 @@ public class AuthServices: NSObject {
             completion(nil, AuthenticationError.expired)
             return
         }
-
-        let endpoint = Constants.API.token.replacingOccurrences(of: Constants.API.realmToken, with: realm)
-        let url = baseUrl.appendingPathComponent(endpoint)
-        KeycloakAPI.refresh(credentials: credentials, url: url, grantType: Constants.GrantType.refreshToken.rawValue, redirectUri: redirectUri, clientId: clientId) { (credentials: Credentials?, error: Error?) in
+        
+        guard let authState else {
+            completion(nil, AuthenticationError.credentialsUnavailable)
+            return
+        }
+        
+        guard let tokenRefreshRequest = authState.tokenRefreshRequest() else {
+            completion(nil, AuthenticationError.unableToCreateTokenRefreshRequest)
+            return
+        }
+        
+        OIDAuthorizationService.perform(tokenRefreshRequest) { tokenResponse, error in
+            let credentials = tokenResponse?.toCredentials()
+            
+            if let _ = credentials, error == nil {
+                do {
+                    try authState.saveAsSerialized()
+                } catch let savingError {
+                    self.logout()
+                    completion(nil, savingError)
+                    return
+                }
+            }
             
             self.credentials = credentials
             completion(credentials, error)
@@ -99,33 +168,11 @@ public class AuthServices: NSObject {
     
     public func logout() {
         
-        guard let credentials = credentials else {
-            return
+        if let credentials {
+            credentials.remove();
+            self.credentials = nil
         }
 
-        credentials.remove();
-        self.credentials = nil
-    }
-}
-
-// MARK: AuthenticationDelegate
-extension AuthServices: AuthenticationDelegate {
-    
-    public func authenticationSucceded(oneTimeCode: String) {
-        
-        exchange(oneTimeCode) { (credentials: Credentials?, error: Error?) in
-
-            guard let credentials = credentials else {
-                
-                self.onAuthenticationCompleted?(nil, AuthenticationError.unableToExchangeOneTimeCodeForToken)
-                return
-            }
-            
-            self.onAuthenticationCompleted?(credentials, nil)
-        }
-    }
-    
-    public func authenticationFailed(error: Error) {
-        onAuthenticationCompleted?(nil, error)
+        OIDAuthState.removeFromStorage()
     }
 }
