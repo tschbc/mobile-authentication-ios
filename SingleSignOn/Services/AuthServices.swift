@@ -21,8 +21,6 @@
 import Foundation
 import AppAuth
 
-public typealias AuthenticationCompleted = (_ credentials: Credentials?, _ error: Error?) -> Void
-
 public class AuthServices: NSObject {
 
     private let endpoint: Endpoint
@@ -42,8 +40,6 @@ public class AuthServices: NSObject {
     public private(set) var credentials: Credentials? = {
         return Credentials.loadFromStoredCredentials()
     }()
-    
-    public var onAuthenticationCompleted: AuthenticationCompleted?
     
     private var _authState: OIDAuthState?
     var authState: OIDAuthState? {
